@@ -1,7 +1,15 @@
 from src.pricing_engine import mc_call_price_simple, mc_call_price_control_variate, mc_call_price_importance_sampling, mc_call_price_antithetic 
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 from mpl_toolkits.mplot3d import Axes3D
+from src.pricing_engine import (
+    mc_call_price_simple, 
+    mc_call_price_antithetic, 
+    mc_call_price_importance_sampling, 
+    mc_call_price_control_variate,
+    get_finite_difference_grid
+)
 
 def plot_convergence(S0, K, T, r, sigma, true_price, theta, max_paths=10000):
     Ns = np.arange(100, max_paths + 100, 100)
@@ -102,18 +110,6 @@ def plot_diffusion_3d(S, time_grid, grid, S0, K):
     plt.legend()
     plt.show()
 
-
-import time
-import matplotlib.pyplot as plt
-import numpy as np
-from src.pricing_engine import (
-    mc_call_price_simple, 
-    mc_call_price_antithetic, 
-    mc_call_price_importance_sampling, 
-    mc_call_price_control_variate,
-    get_finite_difference_grid
-)
-
 def plot_complexity_comparison(S0, K, T, r, sigma, theta, max_n=20000):
     """Compare le temps d'exécution (Complexité) de tous les algorithmes."""
     # On définit une échelle de N (Nombre de chemins pour MC / Pas de temps pour FD)
@@ -152,7 +148,6 @@ def plot_complexity_comparison(S0, K, T, r, sigma, theta, max_n=20000):
         get_finite_difference_grid(S0, K, T, r, sigma, M=100, N=n)
         times_fd.append(time.time() - start)
 
-    # Création du graphique de complexité
     plt.figure(figsize=(12, 7))
     plt.plot(Ns, times_simple, label="MC Simple", color="gray", linestyle='--')
     plt.plot(Ns, times_anti, label="MC Antithétique", color="blue")
@@ -168,18 +163,7 @@ def plot_complexity_comparison(S0, K, T, r, sigma, theta, max_n=20000):
     plt.savefig("comparison_complexities.png")
     plt.show()
 
-import time
-import matplotlib.pyplot as plt
-import numpy as np
-from src.pricing_engine import (
-    mc_call_price_simple, 
-    mc_call_price_antithetic, 
-    mc_call_price_importance_sampling, 
-    mc_call_price_control_variate
-)
-
 def plot_mc_complexity_comparison(S0, K, T, r, sigma, theta, max_n=30000):
-    """Compare le temps d'exécution des variantes de Monte Carlo."""
     Ns = np.arange(1000, max_n + 1000, 2000)
     
     t_simple, t_anti, t_is, t_cv = [], [], [], []
